@@ -18,26 +18,25 @@
           pkgs = import nixpkgs {
             inherit system;
             overlays = [
-#            trace: warning: `fenix.overlay` is deprecated; use 'fenix.overlays.default' instead
               fenix.overlay
             ];
           };
           toolchain = fenix.packages.${system}.fromToolchainFile {
             file = ./rust-toolchain.toml;
-            sha256 = "sha256-DzNEaW724O8/B8844tt5AVHmSjSQ3cmzlU4BP90oRlY=";
+            sha256 = "sha256-5sAwt7WkNNp8tJcLgZZ2aq2dNka7IuC5o6OZ5HIhXa0=";
           };
           naersk' = pkgs.callPackage naersk {
             cargo = toolchain;
             rustc = toolchain;
           };
-          rust_kernel = with naersk'; buildPackage {
+          rust_kernel = with naersk'; with pkgs; buildPackage {
             doCheck = true;
+            buildInputs = [ cargo-bootimage cargo-runner ];
             checkInputs = [ toolchain ];
             name = "rust_kernel";
             version = "0.1.0";
             src = ./.;
           };
-          frameworks = with pkgs; darwin.apple_sdk.frameworks;
         in
         {
           # For `nix flake check`
@@ -64,6 +63,8 @@
               act
               nixfmt
               cargo-watch
+              cargo-bootimage
+              cargo-runner
             ];
             shellHook = ''
               ${self.checks.${system}.pre-commit-check.shellHook}
