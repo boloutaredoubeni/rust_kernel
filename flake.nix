@@ -2,7 +2,7 @@
   description = "A very basic flake";
   
     inputs = {
-      nixpkgs.url = "github:NixOS/nixpkgs/release-22.05";
+      nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
       flake-utils.url = "github:numtide/flake-utils";
 
       fenix.url = "github:nix-community/fenix";
@@ -31,7 +31,7 @@
           };
           rust_kernel = with naersk'; with pkgs; buildPackage {
             doCheck = true;
-            buildInputs = [ cargo-bootimage cargo-runner ];
+#            buildInputs = [ cargo-bootimage cargo-runner ];
             checkInputs = [ toolchain ];
             name = "rust_kernel";
             version = "0.1.0";
@@ -60,11 +60,11 @@
             ];
             buildInputs = [
               rust-analyzer-nightly
-              act
-              nixfmt
-              cargo-watch
-              cargo-bootimage
-              cargo-runner
+#              act
+#              nixfmt
+#              cargo-watch
+#              cargo-bootimage
+#              cargo-runner
             ];
             shellHook = ''
               ${self.checks.${system}.pre-commit-check.shellHook}
